@@ -3,9 +3,12 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 group = 'ru.ensemplix.manifest'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 checkstyle {
     toolVersion = '6.1'
@@ -17,5 +20,19 @@ repositories {
 }
 
 dependencies {
+    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+    compile 'commons-codec:commons-codec:1.9'
+    compile 'commons-cli:commons-cli:1.2'
+
     testCompile 'junit:junit:4.11'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ru.ensemplix.manifest.Manifest',
+                'Implementation-Version': version,
+                'Sealed': true
+        )
+    }
 }
