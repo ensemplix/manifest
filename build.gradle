@@ -1,0 +1,21 @@
+apply plugin: 'checkstyle'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+group = 'ru.ensemplix.manifest'
+version = '1.0-SNAPSHOT'
+
+compileJava.options.encoding = 'UTF-8'
+
+checkstyle {
+    toolVersion = '6.1'
+    configFile = file('checkstyle.xml')
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+}
