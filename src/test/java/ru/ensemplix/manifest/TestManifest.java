@@ -19,12 +19,11 @@ public class TestManifest {
 
     @Test
     public void testManifest() throws IOException, ParseException {
-
         Manifest.Resource[] expected = new Manifest.Resource[] {
-            new Manifest.Resource("/libjinput-linux.so", "f2317f7c050cd441510423e90fb16dfd", 13824),
-            new Manifest.Resource("/libjinput-linux64.so", "23a6b611eaab617a9394f932b69ae034", 14512),
-            new Manifest.Resource("/other/jinput-dx8.dll", "ae25629d223b95f73f2f27800da6bbb3", 61952),
-            new Manifest.Resource("/other/jinput-dx8_64.dll", "f1a51706365a44ea21aa96a9a04bfb37", 65024)
+            new Manifest.Resource("/natives/libjinput-linux.so", "f2317f7c050cd441510423e90fb16dfd", 13824),
+            new Manifest.Resource("/natives/libjinput-linux64.so", "23a6b611eaab617a9394f932b69ae034", 14512),
+            new Manifest.Resource("/natives/other/jinput-dx8.dll", "ae25629d223b95f73f2f27800da6bbb3", 61952),
+            new Manifest.Resource("/natives/other/jinput-dx8_64.dll", "f1a51706365a44ea21aa96a9a04bfb37", 65024)
         };
 
         File file = folder.newFile("natives.json");

@@ -40,7 +40,10 @@ public class Manifest {
                 continue;
             }
 
-            String name = file.getAbsolutePath().replace(folder.getAbsolutePath(), "").replaceAll("\\\\", "/");
+            String name = file.getAbsolutePath();
+            name = name.replace(folder.getParentFile().getAbsolutePath(), "");
+            name = name.replaceAll("\\\\", "/");
+
             String hash = DigestUtils.md5Hex(new FileInputStream(file));
             long size = file.length();
 
