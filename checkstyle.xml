@@ -136,7 +136,9 @@
         </module>
 
         <!-- Проверяет корректность отступов. -->
-        <module name="Indentation"/>
+        <module name="Indentation">
+            <property name="arrayInitIndent" value="8"/>
+        </module>
 
         <!-- Внутренние классы должны находиться в конце файла. -->
         <module name="InnerTypeLast"/>

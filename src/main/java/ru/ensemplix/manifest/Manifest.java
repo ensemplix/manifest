@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class Manifest {
     public static void main(String[] args) throws ParseException, IOException {
         Options options = new Options();
         options.addOption("f", "folder", true, "folder that need to be patched");
-        options.addOption("o", "output", true, "where save patch output");
+        options.addOption("u", "url", true, "url where files will be hosted");
         options.addOption("i", "info", false, "prints info during patch creation");
 
         CommandLine cmd = new GnuParser().parse(options, args);
@@ -68,30 +69,33 @@ public class Manifest {
             return;
         }
 
-        if(!cmd.hasOption("output")) {
-            System.out.println("Please provide output file name");
-            return;
-        }
-
         File folder = new File(cmd.getOptionValue("folder"));
 
-        if(!folder.exists()) {
+        if(!folder.isDirectory()) {
             System.out.println("Please provide existing folder.");
             return;
         }
 
-        File output = new File(cmd.getOptionValue("output"));
+        File outputJson = new File(folder.getAbsoluteFile().getParent(), folder.getName() + ".json");
 
         System.out.println("Creating manifest.");
 
-        Manifest manifest = new Manifest(folder, output, cmd.hasOption("info"));
+        Manifest manifest = new Manifest(folder, outputJson, cmd.hasOption("info"));
         manifest.fetch(folder);
 
+        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(outputJson, manifest.getResources());
+
+        if(cmd.hasOption("url")) {
+            File outputUrl = new File(folder.getAbsoluteFile().getParent(), folder.getName() + ".txt");
+
+            try (FileWriter writer = new FileWriter(outputUrl)) {
+                for (Manifest.Resource resource : manifest.getResources()) {
+                    writer.write(cmd.getOptionValue("url") + resource.name + "\n");
+                }
+            }
+        }
+
         System.out.println("Finished creating manifest patch from " + manifest.getResources().size() + " resources.");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        mapper.writerWithDefaultPrettyPrinter().writeValue(output, manifest.getResources());
     }
 
     public static class Resource {
