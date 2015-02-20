@@ -44,7 +44,7 @@ public class TestManifest {
         for(int i = 0; i < expected.length; i++) {
             boolean found = false;
 
-            for(int y = 0; i < actual.length; y++) {
+            for(int y = 0; y < actual.length; y++) {
                 if(actual[y].name.equalsIgnoreCase(expected[i].name)) {
                     assertEquals(expected[i].name, actual[y].name);
                     assertEquals(expected[i].hash, actual[y].hash);
