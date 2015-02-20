@@ -67,7 +67,7 @@ public class TestManifest {
             int i = 0;
 
             while((line = br.readLine()) != null) {
-                assertEquals(url + expected[i].name, line);
+                assertEquals(url + actual[i].name, line);
                 i++;
             }
         } finally {
