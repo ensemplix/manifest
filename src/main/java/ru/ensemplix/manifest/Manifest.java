@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,8 +46,12 @@ public class Manifest {
             name = name.replace(folder.getParentFile().getAbsolutePath(), "");
             name = name.replaceAll("\\\\", "/");
 
-            String hash = DigestUtils.md5Hex(new FileInputStream(file));
             long size = file.length();
+            String hash;
+
+            try(FileInputStream input = new FileInputStream(file)) {
+                hash = DigestUtils.md5Hex(input);
+            }
 
             resources.add(new Resource(name, hash, size));
 
@@ -60,6 +65,7 @@ public class Manifest {
         Options options = new Options();
         options.addOption("f", "folder", true, "folder that need to be patched");
         options.addOption("u", "url", true, "url where files will be hosted");
+        options.addOption("h", "hash", false, "files will renamed to they hash");
         options.addOption("i", "info", false, "prints info during patch creation");
 
         CommandLine cmd = new GnuParser().parse(options, args);
@@ -76,7 +82,8 @@ public class Manifest {
             return;
         }
 
-        File outputJson = new File(folder.getAbsoluteFile().getParent(), folder.getName() + ".json");
+        File coreFolder = folder.getParentFile();
+        File outputJson = new File(coreFolder, folder.getName() + ".json");
 
         System.out.println("Creating manifest.");
 
@@ -86,11 +93,25 @@ public class Manifest {
         new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(outputJson, manifest.getResources());
 
         if(cmd.hasOption("url")) {
-            File outputUrl = new File(folder.getAbsoluteFile().getParent(), folder.getName() + ".txt");
+            File outputUrl = new File(coreFolder, folder.getName() + ".txt");
 
             try (FileWriter writer = new FileWriter(outputUrl)) {
-                for (Manifest.Resource resource : manifest.getResources()) {
+                for (Resource resource : manifest.getResources()) {
                     writer.write(cmd.getOptionValue("url") + resource.name + "\n");
+                }
+            }
+        }
+
+        if(cmd.hasOption("hash")) {
+            File hashFolder = new File(coreFolder, "hashed");
+
+            for (Resource resource : manifest.getResources()) {
+                String fileName = resource.name.substring(resource.name.lastIndexOf("/") + 1);
+                File hashFile = new File(hashFolder, resource.name.replaceAll(fileName, resource.hash));
+
+                if(!hashFile.exists()) {
+                    hashFile.getParentFile().mkdirs();
+                    Files.copy(new File(coreFolder, resource.name).toPath(), hashFile.toPath());
                 }
             }
         }
