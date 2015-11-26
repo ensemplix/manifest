@@ -1,4 +1,3 @@
-apply plugin: 'checkstyle'
 apply plugin: 'java'
 apply plugin: 'idea'
 
@@ -9,11 +8,6 @@ compileJava.options.encoding = 'UTF-8'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-
-checkstyle {
-    toolVersion = '6.1'
-    configFile = file('checkstyle.xml')
-}
 
 repositories {
     mavenCentral()
